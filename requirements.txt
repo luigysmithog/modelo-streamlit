@@ -1,3 +1,6 @@
 transformers
 torch
 streamlit
+sentencepiece
+scikit-learn
+pandas

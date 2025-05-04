@@ -17,15 +17,27 @@ def load_model():
 
 classifier = load_model()
 
+# Función para traducir la etiqueta
+def interpretar_sentimiento(label):
+    interpretaciones = {
+        "1 star": "Muy negativo 😡",
+        "2 stars": "Negativo 🙁",
+        "3 stars": "Neutral 😐",
+        "4 stars": "Positivo 🙂",
+        "5 stars": "Muy positivo 😄"
+    }
+    return interpretaciones.get(label, "Desconocido")
+
 # Botón de análisis
 if st.button("Analizar"):
     if text_input.strip() != "":
         result = classifier(text_input)
         label = result[0]['label']
         score = result[0]['score']
+        interpretacion = interpretar_sentimiento(label)
 
         # Mostrar resultado
-        st.markdown(f"**Sentimiento detectado:** {label}")
+        st.markdown(f"**Sentimiento detectado:** {interpretacion}")
         st.markdown(f"**Confianza:** {score:.2f}")
     else:
         st.warning("Por favor, escribe un texto para analizar.")

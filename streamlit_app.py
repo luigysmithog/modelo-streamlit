@@ -28,7 +28,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Título personalizado
-st.markdown('<div class="title">💬 Análisis de Sentimiento Multilingüe</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">💬 Análisis de Sentimiento Multilinguaje para calificar un producto</div>', unsafe_allow_html=True)
 st.markdown('<div style="text-align:center;">Escribe una frase y el modelo intentará detectar si el sentimiento es positivo, negativo o neutral.</div>', unsafe_allow_html=True)
 
 # Entrada de texto

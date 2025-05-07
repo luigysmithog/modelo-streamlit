@@ -2,9 +2,9 @@ import streamlit as st
 from transformers import pipeline
 
 # Título
-st.title("Prueba de modelo HuggingFace")
+st.title("Modelo HuggingFace starts")
 
-st.write("Escribe un texto para analizar el sentimiento (palabra o frase completa).")
+st.write("Escribe un texto para analizar la calificación de un producto (palabra o frase completa).")
 
 text_input = st.text_area("Texto:", "")
 

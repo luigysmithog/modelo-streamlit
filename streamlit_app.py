@@ -3,14 +3,37 @@ from transformers import pipeline
 import pandas as pd
 import altair as alt
 
+# CSS personalizado
+st.markdown("""
+    <style>
+        .reportview-container {
+            background-color: #f4f4f4;
+            padding: 2rem;
+        }
+        .stTextInput > div > div > input {
+            font-size: 16px;
+        }
+        .stButton > button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            padding: 10px 24px;
+            border-radius: 8px;
+        }
+        .stMarkdown h1 {
+            color: #333;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Título
 st.title("🔍 Análisis de Sentimiento Multilingüe")
 
-st.write("Escribe una frase y analiza el sentimiento con calificación de 1 a 5 estrellas (modelo multilingüe).")
+st.write("Escribe una frase para analizar el sentimiento. El modelo devolverá una calificación entre 1 y 5 estrellas con nivel de confianza.")
 
-text_input = st.text_area("Texto a analizar:", "")
+text_input = st.text_area("✏️ Texto a analizar:", "")
 
-# Cargar el modelo con cache
+# Cargar el modelo
 @st.cache_resource
 def load_model():
     return pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment", return_all_scores=True)
@@ -28,27 +51,27 @@ def interpretar_label(label):
     return interpretaciones.get(label, "Desconocido")
 
 if st.button("🔎 Analizar Sentimiento"):
-    if text_input.strip() != "":
-        results = classifier(text_input)[0]  # Lista con 5 resultados
+    if text_input.strip():
+        results = classifier(text_input)[0]  # Lista con resultados por clase
         df = pd.DataFrame(results)
         df['interpretacion'] = df['label'].map(interpretar_label)
 
-        # Obtener el resultado más confiable
         mejor = df.loc[df['score'].idxmax()]
 
         # Mostrar resultado principal
-        st.markdown(f"### 📌 Resultado principal:")
-        st.markdown(f"**Interpretación:** {interpretar_label(mejor['label'])}")
-        st.markdown(f"**Confianza:** {mejor['score']:.2f}")
+        st.markdown("## 📌 Resultado Principal")
+        st.markdown(f"**Sentimiento:** `{interpretar_label(mejor['label'])}`")
+        st.markdown(f"**Confianza del modelo:** `{mejor['score']:.2f}`")
 
-        # Mostrar gráfica
-        st.markdown("### 📊 Distribución de puntuaciones:")
-        chart = alt.Chart(df).mark_bar().encode(
-            x=alt.X('interpretacion', title='Etiqueta'),
+        # Gráfica de barras
+        st.markdown("## 📊 Distribución completa del modelo:")
+        chart = alt.Chart(df).mark_bar(size=40).encode(
+            x=alt.X('interpretacion', title='Sentimiento'),
             y=alt.Y('score', title='Confianza'),
-            color='interpretacion',
+            color=alt.Color('interpretacion', legend=None),
             tooltip=['label', 'score']
-        )
+        ).properties(width=600, height=300)
+
         st.altair_chart(chart, use_container_width=True)
     else:
-        st.warning("✏️ Escribe una frase para analizar.")
+        st.warning("⚠️ Por favor, escribe una frase primero.")
